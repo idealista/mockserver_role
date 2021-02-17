@@ -1,0 +1,7 @@
+---
+
+- name: Converge
+  hosts: mockserver_group
+  roles:
+    - role: java_role
+    - role: mockserver_role

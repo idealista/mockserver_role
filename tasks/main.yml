@@ -1,0 +1,16 @@
+---
+
+- name: MockServer | Install
+  include: install.yml
+  tags:
+    - mockserver_install
+
+- name: MockServer | Configure
+  include: config.yml
+  tags:
+    - mockserver_configure
+
+- name: MockServer | Service
+  include: service.yml
+  tags:
+    - mockserver_service

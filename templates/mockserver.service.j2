@@ -1,0 +1,30 @@
+{{ ansible_managed | comment }}
+[Unit]
+Description=mockserver
+Documentation={{ mockserver_documentation_link }}
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+PrivateTmp={{ mockserver_private_tmp }}
+User={{ mockserver_user }}
+Group={{ mockserver_group }}
+RuntimeDirectory=mockserver
+LimitNOFILE={{ mockserver_max_files }}
+
+Environment="MOCKSERVER_PERSIST_EXPECTATIONS=true"
+Environment="MOCKSERVER_PERSISTED_EXPECTATIONS_PATH={{ mockserver_root_path }}/mockserverInitialization.json"
+Environment="MOCKSERVER_INITIALIZATION_JSON_PATH={{ mockserver_root_path }}/mockserverInitialization.json"
+Environment="MOCKSERVER_PROPERTY_FILE={{ mockserver_root_path }}/mockserver.properties"
+Environment="JAVA_OPTS=-Djava.util.logging.config.file={{ mockserver_root_path }}/logging.properties"
+
+ExecStart={{ mockserver_java_bin }} $JAVA_OPTS -jar {{ mockserver_bin_path }}/{{ mockserver_jar_name }} {% for option in mockserver_options %}{% if option %}-{{ option }} {% endif %}{% endfor %}
+
+StandardOutput={{ mockserver_log_output }}
+StandardError={{ mockserver_log_output }}
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGTERM
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

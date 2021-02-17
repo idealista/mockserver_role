@@ -1,0 +1,67 @@
+---
+
+- name: Mockserver | Ensure mockserver group
+  group:
+    name: "{{ mockserver_group }}"
+    system: yes
+    state: present
+  tags:
+    - mockserver_install
+
+- name: MockServer | Ensure mockserver user
+  user:
+    name: "{{ mockserver_user }}"
+    group: "{{ mockserver_group }}"
+    system: yes
+    shell: /usr/sbin/nologin
+    createhome: no
+  tags:
+    - mockserver_install
+
+- name: MockServer | Ensure skeleton paths
+  file:
+    dest: "{{ item }}"
+    owner: "{{ mockserver_user }}"
+    group: "{{ mockserver_group }}"
+    state: directory
+  with_items:
+    - "{{ mockserver_skeleton_paths }}"
+  tags:
+    - mockserver_install
+
+- name: MockServer | Check mockserver version
+  stat:
+    path: "{{ mockserver_bin_path }}/{{ mockserver_jar_name }}"
+  register: mockserver_check
+  changed_when: false
+  ignore_errors: true
+  tags:
+    - mockserver_install
+
+- name: MockServer | Download JAR
+  get_url:
+    url: "{{ mockserver_url }}"
+    dest: /tmp
+  when: not mockserver_check.stat.exists or mockserver_force_reinstall
+  tags:
+    - mockserver_install
+
+- name: MockServer | Copy JAR
+  copy:
+    src: "/tmp/{{ mockserver_package }}"
+    dest: "{{ mockserver_bin_path }}/{{ mockserver_jar_name }}"
+    owner: "{{ mockserver_user }}"
+    group: "{{ mockserver_group }}"
+    remote_src: yes
+  when: not mockserver_check.stat.exists or mockserver_force_reinstall
+  tags:
+    - mockserver_install
+
+- name: MockServer | Link JAR
+  file:
+    src: "{{ mockserver_bin_path }}/{{ mockserver_jar_name }}"
+    dest: "{{ mockserver_bin_name }}"
+    state: link
+  when: not mockserver_check.stat.exists or mockserver_force_reinstall
+  tags:
+    - mockserver_install
