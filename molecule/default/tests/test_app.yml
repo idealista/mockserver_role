@@ -1,0 +1,53 @@
+---
+
+service:
+  mockserver:
+    enabled: true
+    running: true
+
+process:
+  java:
+    running: true
+
+user:
+  mockserver:
+      exists: true
+      groups:
+        - mockserver
+      shell: /usr/sbin/nologin
+
+group:
+  mockserver:
+    exists: true
+
+file:
+  /opt/mockserver:
+    owner: mockserver
+    group: mockserver
+    exists: true
+    filetype: directory
+
+  /opt/mockserver/bin:
+    owner: mockserver
+    group: mockserver
+    exists: true
+    filetype: directory
+
+  /opt/mockserver/mockserver.properties:
+    owner: mockserver
+    group: mockserver
+    exists: true
+    filetype: file
+
+  /var/log/mockserver:
+    owner: mockserver
+    group: mockserver
+    exists: true
+    filetype: directory
+
+http:
+  http://localhost:8080/mockserver/status:
+    status: 200
+    method: PUT
+  http://localhost:8080/health:
+    status: 200

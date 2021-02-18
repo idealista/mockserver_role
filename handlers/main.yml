@@ -1,0 +1,7 @@
+---
+
+- name: restart mockserver
+  systemd:
+    name: mockserver
+    state: restarted
+  when: mockserver_service_state != 'stopped'
