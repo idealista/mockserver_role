@@ -1,0 +1,54 @@
+---
+
+## General
+# Version
+mockserver_version: 5.11.2
+
+# Package URL
+mockserver_package: "mockserver-netty-{{ mockserver_version }}-jar-with-dependencies.jar"
+mockserver_url: "https://search.maven.org/remotecontent?filepath=org/mock-server/mockserver-netty/{{ mockserver_version }}/{{ mockserver_package }}"
+
+
+# Set true to force the download and installation of the binary
+mockserver_force_reinstall: false
+
+# Installation path
+mockserver_jar_name: "{{ mockserver_package }}"
+mockserver_root_path: /opt/mockserver
+mockserver_bin_path: "{{ mockserver_root_path }}/bin"
+mockserver_logs_path: "/var/log/mockserver"
+
+mockserver_skeleton_paths:
+  - "{{ mockserver_bin_path }}"
+  - "{{ mockserver_logs_path }}"
+mockserver_bin_name: /usr/bin/mockserver
+mockserver_java_bin: /usr/bin/java
+
+## Service options
+# Documentation
+mockserver_documentation_link: "https://www.mock-server.com/"
+mockserver_max_files: 32768
+mockserver_service_enabled: True
+mockserver_service_state: started
+mockserver_private_tmp: true
+
+# Owner
+mockserver_user: mockserver
+mockserver_group: mockserver
+
+# Logs
+# If wanted to output the logs to a file define the following variable
+# More information at https://www.freedesktop.org/software/systemd/man/systemd.exec.html#StandardOutput=
+# mockserver_log_file: path_of_the_file
+mockserver_log_output: "{% if mockserver_log_file is defined %} file:{{ mockserver_log_file }} {% else %} journal {% endif %}"
+
+# Templates
+mockserver_properties_file: mockserver.properties.j2
+mockserver_logging_file: logging.properties.j2
+mockserver_service_file: mockserver.service.j2
+
+# Flags
+mockserver_port: 8080
+
+mockserver_options:
+  - "serverPort {{ mockserver_port }}"

@@ -1,0 +1,21 @@
+---
+
+- name: MOCKSERVER | Copy Daemon script
+  template:
+    src: mockserver.service.j2
+    dest: /etc/systemd/system/mockserver.service
+    mode: 0644
+    owner: root
+    group: root
+  notify: restart mockserver
+  tags:
+    - mockserver_service
+
+- name: MOCKSERVER | Configuring service
+  systemd:
+    name: mockserver
+    state: "{{ mockserver_service_state }}"
+    enabled: "{{ mockserver_service_enabled }}"
+    daemon_reload: yes
+  tags:
+    - mockserver_service

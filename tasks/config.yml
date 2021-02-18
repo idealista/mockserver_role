@@ -1,0 +1,21 @@
+---
+
+- name: MockServer | Copy properties
+  template:
+    src: "{{ mockserver_properties_file }}"
+    dest: "{{ mockserver_root_path }}/mockserver.properties"
+    owner: "{{ mockserver_user }}"
+    group: "{{ mockserver_group }}"
+  notify: restart mockserver
+  tags:
+    - mockserver_configure
+
+- name: MockServer | Copy logging properties
+  template:
+    src: "{{ mockserver_logging_file }}"
+    dest: "{{ mockserver_root_path }}/logging.properties"
+    owner: "{{ mockserver_user }}"
+    group: "{{ mockserver_group }}"
+  notify: restart mockserver
+  tags:
+    - mockserver_configure
